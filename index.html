@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cortex Finance</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--hi:#334155;--tx:#f8fafc;--mu:#94a3b8;--em:#10b981;--am:#f59e0b;--bl:#3b82f6;--in:#6366f1;--rd:#f87171;--bd:#334155;--track:#334155;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f5f9;--card:#fff;--hi:#e2e8f0;--tx:#0f172a;--mu:#64748b;--bd:#e2e8f0;--track:#e2e8f0}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html{color-scheme:dark light}
+body{background:var(--bg);color:var(--tx);display:flex;justify-content:center;padding:20px 10px 40px}
+.wrap{width:100%;max-width:420px;display:flex;flex-direction:column;gap:16px}
+.head{display:flex;justify-content:space-between;align-items:center;padding:4px 8px}
+.head h1{font-size:1.25rem;letter-spacing:-.5px}
+.pill{font-size:.8rem;background:var(--card);padding:6px 12px;border-radius:20px;color:var(--mu);border:1px solid var(--bd);cursor:pointer}
+.card{background:var(--card);border-radius:16px;padding:18px;border:1px solid var(--bd)}
+.lbl{font-size:.75rem;color:var(--mu)}
+.big{font-size:1.6rem;font-weight:700;margin-top:2px}
+.safe{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);padding:10px 14px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.safe b{color:var(--em);font-size:1.1rem}
+.bar{height:8px;background:var(--track);border-radius:4px;display:flex;overflow:hidden}
+.row{display:flex;justify-content:space-between;font-size:.85rem;align-items:center}
+h3{font-size:.95rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.sm{font-size:.8rem;font-weight:500}
+.btn{background:var(--bl);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--mu);border:1px solid var(--bd)}
+.btn.link{background:none;color:var(--bl);padding:0;font-size:.8rem}
+.btns{display:flex;gap:8px}.btns .btn{flex:1}
+.av{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.av:last-of-type{border-bottom:0}
+.ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1.05rem;margin-right:10px;background:var(--hi)}
+.av .n{font-size:.9rem;font-weight:500}.av .t{font-size:.72rem;color:var(--mu)}
+.al{margin-bottom:14px}.al:last-child{margin-bottom:0}
+.trk{position:relative;height:6px;background:var(--track);border-radius:3px;margin-top:6px}
+.fill{height:100%;border-radius:3px}
+.pace{position:absolute;top:-4px;width:2px;height:14px;background:var(--tx);opacity:.55;border-radius:1px}
+.nudge{border-left:3px solid var(--bl);background:rgba(59,130,246,.12);padding:12px;border-radius:0 10px 10px 0;font-size:.85rem;line-height:1.45}
+.nudge .btn{margin-top:10px}
+.tx{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:.85rem}
+.tx small{display:block;font-size:.7rem;color:var(--mu);margin-top:2px}
+.neg{color:var(--rd)}.pos{color:var(--em)}
+.ov{position:fixed;inset:0;background:rgba(2,6,23,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.ov.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:420px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;max-height:90%;overflow:auto}
+.sheet h2{font-size:1.05rem}
+.sheet label{font-size:.75rem;color:var(--mu);display:flex;flex-direction:column;gap:4px}
+.sheet input,.sheet select{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:11px;font-size:1rem}
+.err{color:var(--rd);font-size:.8rem;min-height:1em}
+.foot{text-align:center}
+.lock{position:fixed;inset:0;background:var(--bg);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}.lock.on{display:flex}.lock input{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:1.3rem;text-align:center;letter-spacing:.4em;width:200px}.sheet textarea{resize:vertical}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:20px;padding:8px 12px;font-size:.85rem;cursor:pointer}.chip.on{background:var(--bl);border-color:var(--bl);color:#fff}.av{flex-wrap:wrap;row-gap:6px}
+:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="lock" id="lock"></div>
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<script>
+var KEY='cortex-finance-v2';
+var ICON={bank:'🏦',momo:'📱',cash:'🛏️',other:'💼'};
+var TYPE={bank:'Bank account',momo:'Mobile money',cash:'Cash at home',other:'Other'};
+var CATS={charity:'Charity & community',cons:'Consumption',inv:'Growth & investment'};
+function seed(){return{
+ hide:false,
+ avenues:[{id:'a1',name:'Main bank',type:'bank',bal:2200000},{id:'a2',name:'MoMo',type:'momo',bal:1350000},{id:'a3',name:'Under the pillow',type:'cash',bal:700000}],
+ inflow:[{n:'Active / technical salary',v:4500000},{n:'Projects & venture returns',v:1500000}],
+ split:{charity:.1,cons:.4,inv:.5},
+ spent:{charity:600000,cons:2100000,inv:2550000},
+ tx:[{t:'Hardware component supplies',c:'inv',a:180000,av:'a1'},{t:'Groceries & market run',c:'cons',a:95000,av:'a2'},{t:'Community support fund',c:'charity',a:100000,av:'a3'}]
+}}
+var S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.avenues)S=seed();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fmt(n){return S.hide?'UGX ••••••':'UGX '+Math.round(n).toLocaleString('en-US')}
+function sum(a,f){return a.reduce(function(s,x){return s+f(x)},0)}
+function av(id){return S.avenues.filter(function(a){return a.id===id})[0]}
+
+function render(){
+ var d=new Date(),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(),left=last-d.getDate()+1,el=d.getDate()/last;
+ var inflow=sum(S.inflow,function(i){return i.v}),liquid=sum(S.avenues,function(a){return a.bal});
+ var tg={};for(var k in CATS)tg[k]=inflow*S.split[k];
+ var build=S.spent.charity+S.spent.inv,burn=S.spent.cons,tot=build+burn||1;
+ var head=tg.cons-S.spent.cons,safe=Math.max(0,head/left);
+ var h='<div class="head"><h1>Cortex Finance</h1><div class="pill" data-a="hide">'+(S.hide?'Show':'Hide')+' balances</div></div>';
+ h+='<div class="card"><div class="lbl">Net liquid capital</div><div class="big">'+fmt(liquid)+'</div>'
+  +'<div class="safe"><div><div class="lbl">Daily safe-to-spend</div><span class="lbl">Left in consumption ÷ '+left+' days</span></div><b>'+fmt(safe)+'</b></div>'
+  +'<div style="margin-top:14px"><div class="row lbl" style="margin-bottom:6px"><span>Build vs. burn</span><span>'+Math.round(build/tot*100)+'% build / '+Math.round(burn/tot*100)+'% burn</span></div>'
+  +'<div class="bar"><div style="background:var(--em);width:'+build/tot*100+'%"></div><div style="background:var(--am);width:'+burn/tot*100+'%"></div></div></div></div>';
+ h+='<div class="btns"><button class="btn" style="background:var(--em)" data-a="inc">+ Income</button><button class="btn" data-a="tx">− Spend</button><button class="btn" data-a="move">⇄ Move</button></div>';
+ h+='<div class="card"><h3><span>Where your money sits</span><button class="btn link" data-a="av:">+ Add avenue</button></h3>';
+ S.avenues.forEach(function(a){var p=liquid?Math.round(a.bal/liquid*100):0;
+  h+='<div class="av" data-a="av:'+a.id+'"><div style="display:flex;align-items:center"><div class="ico">'+ICON[a.type]+'</div><div><div class="n">'+esc(a.name)+'</div><div class="t">'+TYPE[a.type]+' · '+p+'%</div></div></div><b style="font-size:.9rem">'+fmt(a.bal)+'</b></div>'});
+ h+='</div>';
+ h+='<div class="card"><h3><span>Inflow</span><span class="sm pos">+'+fmt(inflow)+'</span></h3>';
+ S.inflow.forEach(function(i){h+='<div class="row" style="padding:6px 0"><span class="lbl" style="font-size:.85rem">'+esc(i.n)+'</span><b>'+fmt(i.v)+'</b></div>'});
+ h+='<div class="row sm" style="margin-top:6px;color:var(--in)"><span>Split: '+Math.round(S.split.charity*100)+'% charity · '+Math.round(S.split.cons*100)+'% living · '+Math.round(S.split.inv*100)+'% growth</span></div></div>';
+ h+='<div class="card"><h3><span>Allocation targets</span><span class="lbl">Tick = where you should be today</span></h3>';
+ for(var c in CATS){var sp=S.spent[c],t=tg[c],r=t?sp/t:0,col='var(--in)';
+  if(c==='inv')col='var(--em)';
+  if(c==='cons')col=r>=1?'var(--rd)':r>=.9?'var(--am)':'var(--bl)';
+  h+='<div class="al"><div class="row"><span>'+CATS[c]+'</span><span class="sm" style="color:'+col+'">'+fmt(sp)+' / '+fmt(t)+'</span></div><div class="trk"><div class="fill" style="width:'+Math.min(r,1)*100+'%;background:'+col+'"></div><div class="pace" style="left:'+el*100+'%"></div></div></div>'}
+ h+='</div>';
+ var ahead=el*tg.cons-S.spent.cons,sw=Math.floor(head*.5/10000)*10000;
+ h+='<div class="nudge">💡 ';
+ if(head<0)h+='<b>Over budget.</b> Consumption is '+fmt(-head)+' past its target. Pause non-essentials until the next cycle.';
+ else if(ahead>0)h+='<b>Under pace.</b> Consumption is '+fmt(ahead)+' below where you should be today.';
+ else h+='<b>Slightly over pace.</b> Consumption is '+fmt(-ahead)+' above where you should be today, with '+fmt(head)+' left.';
+ if(sw>0)h+='<br><button class="btn" data-a="sweep:'+sw+'">Sweep '+fmt(sw)+' into growth</button>';
+ h+='</div>';
+ h+='<div class="card"><h3>Recent outflows</h3>';
+ if(!S.tx.length)h+='<div class="lbl">No outflows yet. Tap Spend to add one.</div>';
+ S.tx.slice(0,8).forEach(function(x){var a=av(x.av);h+='<div class="tx"><div>'+esc(x.t)+'<small>'+CATS[x.c]+' · '+(a?esc(a.name):'Removed avenue')+'</small></div><span class="neg">−'+fmt(x.a)+'</span></div>'});
+ h+='</div><div class="foot" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap"><button class="btn link" data-a="bk">Backup &amp; restore</button><button class="btn link" data-a="pin">PIN lock</button><button class="btn link" data-a="reset">Sample data</button></div>';
+ $('app').innerHTML=h;
+}
+
+function openSheet(h){$('sheet').innerHTML=h;$('ov').classList.add('on')}
+function closeSheet(){$('ov').classList.remove('on')}
+function opts(sel){return S.avenues.map(function(a){return'<option value="'+a.id+'"'+(a.id===sel?' selected':'')+'>'+esc(a.name)+' ('+fmt(a.bal)+')</option>'}).join('')}
+function num(id){return Math.round(parseFloat($(id).value)||0)}
+function fail(m){$('err').textContent=m}
+
+function txSheet(pre){pre=pre||{};
+ openSheet('<h2>'+(pre.t?'Confirm sweep':'Record spending')+'</h2>'
+ +'<label>What for<input id="f1" value="'+esc(pre.t||'')+'" placeholder="e.g. Fuel"></label>'
+ +'<label>Amount (UGX)<input id="f2" type="number" inputmode="numeric" value="'+(pre.a||'')+'"></label>'
+ +'<label>Category<select id="f3">'+Object.keys(CATS).map(function(k){return'<option value="'+k+'"'+(k===(pre.c||'cons')?' selected':'')+'>'+CATS[k]+'</option>'}).join('')+'</select></label>'
+ +'<label>Paid from<select id="f4">'+opts()+'</select></label><div class="err" id="err"></div>'
+ +'<div class="btns"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="savetx">Save</button></div>')}
+function moveSheet(){
+ openSheet('<h2>Move money</h2><label>From<select id="f1">'+opts()+'</select></label>'
+ +'<label>To<select id="f2">'+opts(S.avenues[1]&&S.avenues[1].id)+'</select></label>'
+ +'<label>Amount (UGX)<input id="f3" type="number" inputmode="numeric"></label><div class="err" id="err"></div>'
+ +'<div class="btns"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="savemove">Move</button></div>')}
+function avSheet(id){var a=id?av(id):{name:'',type:'bank',bal:''};
+ openSheet('<h2>'+(id?'Edit avenue':'Add avenue')+'</h2><label>Name<input id="f1" value="'+esc(a.name)+'" placeholder="e.g. Stanbic, Airtel Money, Piggy bank"></label>'
+ +'<label>Type<select id="f2">'+Object.keys(TYPE).map(function(k){return'<option value="'+k+'"'+(k===a.type?' selected':'')+'>'+TYPE[k]+'</option>'}).join('')+'</select></label>'
+ +'<label>Balance (UGX)<input id="f3" type="number" inputmode="numeric" value="'+a.bal+'"></label><div class="err" id="err"></div>'
+ +'<div class="btns"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="saveav:'+(id||'')+'">Save</button></div>'
+ +(id?'<button class="btn link neg" style="color:var(--rd)" data-a="delav:'+id+'">Remove this avenue</button>':''))}
+
+function q(s){return esc(s).replace(/'/g,'&#39;')}
+function ym(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)}
+function fix(){S.history=S.history||[];var m=ym();
+ if(!S.cycle)S.cycle=m;
+ else if(S.cycle!==m){S.history.unshift({cy:S.cycle,inflow:sum(S.inflow,function(i){return i.v}),spent:S.spent});S.cycle=m;S.spent={charity:0,cons:0,inv:0};S.inflow=[];S.tx=[]}
+ if(!S.last||!av(S.last.av))S.last={c:(S.last&&S.last.c)||'cons',av:S.avenues[0]?S.avenues[0].id:''}}
+function F(m){fail(m);return true}
+function done(){save();render();return true}
+function chips(id,items,sel){return `<div class='chips' id='${id}' data-v='${sel}'>`+items.map(function(x){return `<button class='chip${x[0]===sel?' on':''}' data-a='chip:${id}:${x[0]}'>${esc(x[1])}</button>`}).join('')+'</div>'}
+function txRow(x,i){var w=av(x.av);return `<div class='tx' data-a='txd:${i}' style='cursor:pointer'><div>${esc(x.t)}<small>${CATS[x.c]} · ${w?esc(w.name):'Removed avenue'}</small></div><span class='neg'>−${fmt(x.a)}</span></div>`}
+function txSheet(pre){pre=pre||{};var ed=pre.idx!==undefined;
+ openSheet(`<h2>${ed?'Edit outflow':pre.t?'Confirm sweep':'Record spending'}</h2><label>Amount (UGX)<input id='f2' type='number' inputmode='numeric' value='${pre.a||''}'></label><label>What for<input id='f1' value='${q(pre.t||'')}' placeholder='e.g. Fuel'></label><div class='lbl'>Category</div>${chips('cc',Object.keys(CATS).map(function(k){return[k,CATS[k]]}),pre.c||S.last.c)}<div class='lbl'>Paid from</div>${chips('ca',S.avenues.map(function(a){return[a.id,a.name]}),pre.av||S.last.av)}<div class='err' id='err'></div><div class='btns'><button class='btn ghost' data-a='close'>Cancel</button><button class='btn' data-a='savetx2:${ed?pre.idx:''}'>Save</button></div>`)}
+function moveSheet(){var o=S.avenues.map(function(a){return `<option value='${a.id}'>${esc(a.name)} (${fmt(a.bal)})</option>`}).join('');
+ openSheet(`<h2>Move money</h2><label>From<select id='f1'>${o}</select></label><label>To<select id='f2'>${o}</select></label><label>Amount (UGX)<input id='f3' type='number' inputmode='numeric'></label><label>Fee, if any (UGX)<input id='f4' type='number' inputmode='numeric' placeholder='e.g. withdrawal charge'></label><div class='err' id='err'></div><div class='btns'><button class='btn ghost' data-a='close'>Cancel</button><button class='btn' data-a='savemove2'>Move</button></div>`);
+ if(S.avenues[1])$('f2').selectedIndex=1}
+function avSheet(id){var a=id?av(id):{name:'',type:'bank',bal:'',goal:''};
+ openSheet(`<h2>${id?'Edit avenue':'Add avenue'}</h2><label>Name<input id='f1' value='${q(a.name)}' placeholder='e.g. Stanbic, Airtel Money, Piggy bank'></label><label>Type<select id='f2'>${Object.keys(TYPE).map(function(k){return `<option value='${k}'${k===a.type?' selected':''}>${TYPE[k]}</option>`}).join('')}</select></label><label>Balance (UGX)<input id='f3' type='number' inputmode='numeric' value='${a.bal}'></label><label>Keep at least (UGX, optional)<input id='f4' type='number' inputmode='numeric' value='${a.goal||''}'></label><div class='err' id='err'></div><div class='btns'><button class='btn ghost' data-a='close'>Cancel</button><button class='btn' data-a='saveav2:${id||''}'>Save</button></div>${id?`<button class='btn link' style='color:var(--rd)' data-a='delav:${id}'>Remove this avenue</button>`:''}`)}
+function splitSheet(){var s=S.split;
+ openSheet(`<h2>Inflow split</h2><div class='lbl'>How each cycle’s income is divided. The three must add up to 100.</div><label>Charity &amp; community (%)<input id='f1' type='number' inputmode='numeric' value='${Math.round(s.charity*100)}'></label><label>Consumption (%)<input id='f2' type='number' inputmode='numeric' value='${Math.round(s.cons*100)}'></label><label>Growth &amp; investment (%)<input id='f3' type='number' inputmode='numeric' value='${Math.round(s.inv*100)}'></label><div class='err' id='err'></div><div class='btns'><button class='btn ghost' data-a='close'>Cancel</button><button class='btn' data-a='savesplit'>Save</button></div>`)}
+function histSheet(){var h=S.history.map(function(x){var b=x.spent.charity+x.spent.inv,u=x.spent.cons,t=b+u||1;return `<div class='tx'><div>${x.cy}<small>Income ${fmt(x.inflow)}</small></div><span class='sm'>${Math.round(b/t*100)}% build · ${Math.round(u/t*100)}% burn</span></div>`}).join('');
+ openSheet(`<h2>Past cycles</h2>${h||`<div class='lbl'>Nothing yet. When a month ends, its totals are saved here.</div>`}<button class='btn ghost' data-a='close'>Close</button>`)}
+function allSheet(){openSheet(`<h2>All outflows</h2>${S.tx.map(txRow).join('')||`<div class='lbl'>No outflows this cycle.</div>`}<button class='btn ghost' data-a='close'>Close</button>`)}
+function txdSheet(i){var x=S.tx[i];if(!x)return;var w=av(x.av);
+ openSheet(`<h2>${esc(x.t)}</h2><div class='lbl'>${CATS[x.c]} · ${w?esc(w.name):'Removed avenue'}</div><div class='big neg'>−${fmt(x.a)}</div><div class='btns'><button class='btn' data-a='txedit:${i}'>Edit</button><button class='btn ghost' style='color:var(--rd)' data-a='txdel:${i}'>Delete &amp; refund</button></div><button class='btn link' data-a='close'>Close</button>`)}
+function h2(a,p,arg,el){
+ if(a==='chip'){var bx=$(p[1]);bx.setAttribute('data-v',p[2]);[].forEach.call(bx.children,function(b){b.classList.toggle('on',b===el)});return true}
+ if(a==='txd'){txdSheet(+arg);return true}
+ if(a==='txedit'){var x=S.tx[+arg];txSheet({idx:+arg,t:x.t,a:x.a,c:x.c,av:x.av});return true}
+ if(a==='txdel'){var y=S.tx[+arg],yw=av(y.av);if(yw)yw.bal+=y.a;S.spent[y.c]=Math.max(0,S.spent[y.c]-y.a);S.tx.splice(+arg,1);closeSheet();return done()}
+ if(a==='all'){allSheet();return true}
+ if(a==='hist'){histSheet();return true}
+ if(a==='split'){splitSheet();return true}
+ if(a==='savesplit'){var c1=num('f1'),c2=num('f2'),c3=num('f3');if(c1<0||c2<0||c3<0||c1+c2+c3!==100)return F('Percentages must add up to 100 (now '+(c1+c2+c3)+').');S.split={charity:c1/100,cons:c2/100,inv:c3/100};closeSheet();return done()}
+ if(a==='savetx2'){var t=$('f1').value.trim(),n=num('f2'),c=$('cc').getAttribute('data-v'),nw=av($('ca').getAttribute('data-v')),o=arg?S.tx[+arg]:null,ow=o?av(o.av):null;
+  if(!t||n<=0)return F('Enter an amount above 0 and what it was for.');
+  if(!nw)return F('Add an avenue first.');
+  if(o){if(ow)ow.bal+=o.a;S.spent[o.c]=Math.max(0,S.spent[o.c]-o.a)}
+  if(n>nw.bal){if(o){if(ow)ow.bal-=o.a;S.spent[o.c]+=o.a}return F(nw.name+' only has '+fmt(nw.bal)+'.')}
+  nw.bal-=n;S.spent[c]+=n;var rec={t:t,c:c,a:n,av:nw.id};if(o)S.tx[+arg]=rec;else S.tx.unshift(rec);S.last={c:c,av:nw.id};closeSheet();return done()}
+ if(a==='savemove2'){var f=av($('f1').value),to=av($('f2').value),m=num('f3'),fe=num('f4');
+  if(!f||!to||f===to)return F('Pick two different avenues.');
+  if(m<=0||fe<0)return F('Enter an amount above 0.');
+  if(m+fe>f.bal)return F(f.name+' only has '+fmt(f.bal)+'.');
+  f.bal-=m+fe;to.bal+=m;if(fe>0){S.spent.cons+=fe;S.tx.unshift({t:'Transfer fee',c:'cons',a:fe,av:f.id})}closeSheet();return done()}
+ if(a==='saveav2'){var nm=$('f1').value.trim(),b=num('f3'),g=num('f4');
+  if(!nm)return F('Give this avenue a name.');
+  if(b<0)return F('Balance can’t be negative.');
+  if(arg){var z=av(arg);z.name=nm;z.type=$('f2').value;z.bal=b;z.goal=g}else S.avenues.push({id:'a'+Date.now(),name:nm,type:$('f2').value,bal:b,goal:g});closeSheet();return done()}
+ return false}
+function render(){fix();
+ var d=new Date(),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(),left=last-d.getDate()+1,el=d.getDate()/last,mon=d.toLocaleString('en-US',{month:'long',year:'numeric'});
+ var inflow=sum(S.inflow,function(i){return i.v}),liquid=sum(S.avenues,function(a){return a.bal}),tg={};
+ for(var k in CATS)tg[k]=inflow*S.split[k];
+ var build=S.spent.charity+S.spent.inv,burn=S.spent.cons,tot=build+burn||1,head=tg.cons-burn,safe=Math.max(0,head/left);
+ var h=`<div class='head'><h1>Cortex Finance</h1><div class='pill' data-a='hide'>${S.hide?'Show':'Hide'} balances</div></div>`;
+ h+=`<div class='card'><div class='lbl'>Net liquid capital</div><div class='big'>${fmt(liquid)}</div><div class='safe'><div><div class='lbl'>Daily safe-to-spend</div><span class='lbl'>Left in consumption ÷ ${left} days</span></div><b>${fmt(safe)}</b></div><div style='margin-top:14px'><div class='row lbl' style='margin-bottom:6px'><span>Build vs. burn</span><span>${Math.round(build/tot*100)}% build / ${Math.round(burn/tot*100)}% burn</span></div><div class='bar'><div style='background:var(--em);width:${build/tot*100}%'></div><div style='background:var(--am);width:${burn/tot*100}%'></div></div></div></div>`;
+ h+=`<div class='btns'><button class='btn' style='background:var(--em)' data-a='inc'>+ Income</button><button class='btn' data-a='tx'>− Spend</button><button class='btn' data-a='move'>⇄ Move</button></div>`;
+ h+=`<div class='card'><h3><span>Where your money sits</span><button class='btn link' data-a='av:'>+ Add avenue</button></h3>`;
+ S.avenues.forEach(function(a){var pc=liquid?Math.round(a.bal/liquid*100):0,g=+a.goal||0;
+  h+=`<div class='av' data-a='av:${a.id}'><div style='display:flex;align-items:center'><div class='ico'>${ICON[a.type]}</div><div><div class='n'>${esc(a.name)}</div><div class='t'>${TYPE[a.type]} · ${pc}%</div></div></div><b style='font-size:.9rem'>${fmt(a.bal)}</b>${g?`<div style='width:100%'><div class='trk'><div class='fill' style='width:${Math.min(a.bal/g,1)*100}%;background:${a.bal>=g?'var(--em)':'var(--am)'}'></div></div><div class='lbl' style='margin-top:4px'>Keep at least ${fmt(g)}${a.bal<g?' · '+fmt(g-a.bal)+' short':''}</div></div>`:''}</div>`});
+ h+='</div>';
+ h+=`<div class='card'><h3><span>Inflow · ${mon}</span><span class='sm pos'>+${fmt(inflow)}</span></h3>`;
+ if(!S.inflow.length)h+=`<div class='lbl'>No income recorded yet this cycle.</div>`;
+ S.inflow.forEach(function(i){h+=`<div class='row' style='padding:6px 0'><span class='lbl' style='font-size:.85rem'>${esc(i.n)}</span><b>${fmt(i.v)}</b></div>`});
+ h+=`<div class='row sm' style='margin-top:8px'><span style='color:var(--in)'>Split ${Math.round(S.split.charity*100)} / ${Math.round(S.split.cons*100)} / ${Math.round(S.split.inv*100)}</span><button class='btn link' data-a='split'>Edit split</button></div></div>`;
+ h+=`<div class='card'><h3><span>Allocation targets</span><span class='lbl'>Tick = where you should be today</span></h3>`;
+ for(var c in CATS){var sp=S.spent[c],t=tg[c],r=t?sp/t:0,col='var(--in)';
+  if(c==='inv')col='var(--em)';
+  if(c==='cons')col=r>=1?'var(--rd)':r>=.9?'var(--am)':'var(--bl)';
+  h+=`<div class='al'><div class='row'><span>${CATS[c]}</span><span class='sm' style='color:${col}'>${fmt(sp)} / ${fmt(t)}</span></div><div class='trk'><div class='fill' style='width:${Math.min(r,1)*100}%;background:${col}'></div><div class='pace' style='left:${el*100}%'></div></div></div>`}
+ h+='</div>';
+ var ahead=el*tg.cons-burn,sw=Math.floor(head*.5/10000)*10000;
+ h+=`<div class='nudge'>💡 `;
+ if(!inflow)h+=`<b>Set this cycle’s targets.</b> Record your income and the split sets your budgets.<br><button class='btn' data-a='inc'>+ Record income</button>`;
+ else{
+  if(head<0)h+=`<b>Over budget.</b> Consumption is ${fmt(-head)} past its target. Pause non-essentials until the next cycle.`;
+  else if(ahead>0)h+=`<b>Under pace.</b> Consumption is ${fmt(ahead)} below where you should be today.`;
+  else h+=`<b>Slightly over pace.</b> Consumption is ${fmt(-ahead)} above where you should be today, with ${fmt(head)} left.`;
+  if(sw>0)h+=`<br><button class='btn' data-a='sweep:${sw}'>Sweep ${fmt(sw)} into growth</button>`}
+ h+='</div>';
+ h+=`<div class='card'><h3><span>Recent outflows</span>${S.tx.length>5?`<button class='btn link' data-a='all'>See all (${S.tx.length})</button>`:''}</h3>`;
+ if(!S.tx.length)h+=`<div class='lbl'>No outflows yet. Tap Spend to add one.</div>`;
+ h+=S.tx.slice(0,5).map(txRow).join('')+'</div>';
+ h+=`<div class='foot' style='display:flex;justify-content:center;gap:16px;flex-wrap:wrap'><button class='btn link' data-a='hist'>Past cycles</button><button class='btn link' data-a='bk'>Backup &amp; restore</button><button class='btn link' data-a='pin'>PIN lock</button><button class='btn link' data-a='reset'>Sample data</button></div>`;
+ $('app').innerHTML=h}
+var PKEY='cortex-finance-pin';
+function say(m,ok){var e=$('err');e.textContent=m;e.style.color=ok?'var(--em)':''}
+function hp(s){var x=5381;s='cf'+s;for(var i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return String(x)}
+function getPin(){try{return localStorage.getItem(PKEY)}catch(e){return null}}
+function lockNow(){if(!getPin())return;var l=$('lock');l.innerHTML='<div style="font-size:2rem">🔒</div><h2>Cortex Finance</h2><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="PIN" autocomplete="off"><div class="err" id="lerr"></div><button class="btn" data-a="unlock">Unlock</button><button class="btn link" data-a="forgot">Forgot PIN? Erase data</button>';l.classList.add('on');closeSheet()}
+document.addEventListener('visibilitychange',function(){if(document.hidden)lockNow()});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&$('lock').classList.contains('on')){var b=$('lock').querySelector('[data-a="unlock"]');if(b)b.click()}});
+function incSheet(){openSheet('<h2>Money received</h2><label>Source<input id="f1" placeholder="e.g. Salary, Project payment"></label><label>Amount (UGX)<input id="f2" type="number" inputmode="numeric"></label><label>Deposited to<select id="f3">'+opts()+'</select></label><div class="err" id="err"></div><div class="btns"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="savein">Save</button></div>')}
+function bkSheet(){openSheet('<h2>Backup &amp; restore</h2><div class="lbl">Copy this text and keep it somewhere safe, like your notes or an email to yourself. To restore, paste a saved backup here and tap Restore.</div><textarea id="bk" rows="7" style="background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px;font-size:.75rem;font-family:monospace;width:100%">'+esc(JSON.stringify(S))+'</textarea><div class="err" id="err"></div><div class="btns"><button class="btn" data-a="copybk">Copy backup</button><button class="btn ghost" data-a="restore">Restore</button></div><button class="btn link" data-a="close">Close</button>')}
+function pinSheet(){var has=!!getPin();openSheet('<h2>'+(has?'Change or remove PIN':'Set a PIN')+'</h2><label>New PIN (4–6 digits)<input id="f1" type="password" inputmode="numeric" maxlength="6" autocomplete="off"></label><div class="lbl">Hides your balances when you leave the app. It is a screen lock, not encryption.</div><div class="err" id="err"></div><div class="btns"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="savepin">Save PIN</button></div>'+(has?'<button class="btn link" style="color:var(--rd)" data-a="delpin">Remove PIN</button>':''))}
+lockNow();
+document.addEventListener('click',function(e){
+ var el=e.target.closest('[data-a]');
+ if(!el){if(e.target.id==='ov')closeSheet();return}
+ var p=el.getAttribute('data-a').split(':'),a=p[0],arg=p[1];
+ if(h2(a,p,arg,el))return;
+ if(a==='hide'){S.hide=!S.hide}
+ else if(a==='tx'){txSheet();return}
+ else if(a==='move'){moveSheet();return}
+ else if(a==='av'){avSheet(arg);return}
+ else if(a==='sweep'){txSheet({t:'Surplus sweep to growth',a:+arg,c:'inv'});return}
+ else if(a==='close'){closeSheet();return}
+ else if(a==='savetx'){var t=$('f1').value.trim(),n=num('f2'),c=$('f3').value,w=av($('f4').value);
+  if(!t||n<=0)return fail('Enter what it was for and an amount above 0.');
+  if(!w)return fail('Add an avenue first.');
+  if(n>w.bal)return fail(w.name+' only has '+fmt(w.bal)+'.');
+  w.bal-=n;S.spent[c]+=n;S.tx.unshift({t:t,c:c,a:n,av:w.id});closeSheet()}
+ else if(a==='savemove'){var f=av($('f1').value),to=av($('f2').value),m=num('f3');
+  if(f===to)return fail('Pick two different avenues.');
+  if(m<=0)return fail('Enter an amount above 0.');
+  if(m>f.bal)return fail(f.name+' only has '+fmt(f.bal)+'.');
+  f.bal-=m;to.bal+=m;closeSheet()}
+ else if(a==='saveav'){var nm=$('f1').value.trim(),b=num('f3');
+  if(!nm)return fail('Give this avenue a name.');
+  if(b<0)return fail('Balance can’t be negative.');
+  if(arg){var x=av(arg);x.name=nm;x.type=$('f2').value;x.bal=b}
+  else S.avenues.push({id:'a'+Date.now(),name:nm,type:$('f2').value,bal:b});closeSheet()}
+ else if(a==='delav'){S.avenues=S.avenues.filter(function(x){return x.id!==arg});closeSheet()}
+ else if(a==='inc'){incSheet();return}
+ else if(a==='savein'){var src=$('f1').value.trim(),im=num('f2'),iw=av($('f3').value);
+  if(!iw)return fail('Add an avenue first.');
+  if(!src||im<=0)return fail('Enter the source and an amount above 0.');
+  iw.bal+=im;var ex=S.inflow.filter(function(i){return i.n.toLowerCase()===src.toLowerCase()})[0];
+  if(ex)ex.v+=im;else S.inflow.push({n:src,v:im});closeSheet()}
+ else if(a==='bk'){bkSheet();return}
+ else if(a==='copybk'){var ta=$('bk');ta.select();var done=function(){say('Copied. Paste it somewhere safe.',1)};
+  try{navigator.clipboard.writeText(ta.value).then(done,function(){document.execCommand('copy');done()})}catch(x){try{document.execCommand('copy');done()}catch(y){say('Select the text and copy it by hand.')}}return}
+ else if(a==='restore'){try{var o=JSON.parse($('bk').value);if(!o||!Array.isArray(o.avenues)||!Array.isArray(o.inflow)||!Array.isArray(o.tx)||!o.split||!o.spent)throw 0;S=o;closeSheet()}catch(x){return fail('That doesn’t look like a Cortex backup.')}}
+ else if(a==='pin'){pinSheet();return}
+ else if(a==='savepin'){var pv=$('f1').value;if(!/^\d{4,6}$/.test(pv))return fail('Use 4 to 6 digits.');
+  try{localStorage.setItem(PKEY,hp(pv))}catch(x){return fail('This device wouldn’t save the PIN.')}closeSheet();return}
+ else if(a==='delpin'){try{localStorage.removeItem(PKEY)}catch(x){}closeSheet();return}
+ else if(a==='unlock'){if(hp($('pin').value)===getPin())$('lock').classList.remove('on');else $('lerr').textContent='Wrong PIN. Try again.';return}
+ else if(a==='forgot'){if(!confirm('This erases all saved data and removes the PIN. Continue?'))return;try{localStorage.removeItem(PKEY)}catch(x){}S=seed();$('lock').classList.remove('on')}
+ else if(a==='reset'){if(!confirm('Replace everything with the sample data?'))return;S=seed();}
+ save();render();
+});
+render();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){})</script>
+</body>
+</html>
